@@ -1,0 +1,13 @@
+---
+aws_accounts:
+
+  - name: name_of_account
+    access_key: XXX
+    secret_key: YYY
+    regions: ["sa-east-1", "us-east-1"]
+    enable_info:
+      ebs: yes
+      ecu: yes
+      mem: yes
+      cpu: yes
+      cost: yes

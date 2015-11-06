@@ -1,3 +1,6 @@
+# Ignore default config.yml - Example configuration is provided by sample-config.yml
+conf/config.yml
+
 *.gem
 *.rbc
 /.config
