@@ -5,6 +5,7 @@ require 'yaml'
 require 'logger'
 require_relative 'aws'
 require_relative 'instances'
+require_relative 'metrics'
 
 def read_config(conf_file = 'config')
   config_path = File.expand_path("../conf/#{conf_file}.yml", __FILE__)
@@ -58,13 +59,28 @@ def process_aws_account(name, access_key, secret_key, region, enable_info)
 
   count_classes.each do |k,v|
     @logger.info("[#{name}][#{region}] instance:#{k}=#{v}")
+    @metrics.add("#{name}.#{region}", "ec2.#{k}.count", v)
   end
-  @logger.info("[#{name}][#{region}] cost:#{cost.round(2)}")
-  @logger.info("[#{name}][#{region}] ecu:#{ecu.round(2)}")
-  @logger.info("[#{name}][#{region}] cpu:#{cpu.round(0)}")
-  @logger.info("[#{name}][#{region}] mem:#{mem.round(2)}")
+
+  if enable_info["cost"]
+    @metrics.add("#{name}.#{region}", "ec2.cost.sum", cost.round(2))
+    @logger.info("[#{name}][#{region}] cost:#{cost.round(2)}")
+  end
+  if enable_info["ecu"]
+    @metrics.add("#{name}.#{region}", "ec2.ecu.sum", ecu.round(2))
+    @logger.info("[#{name}][#{region}] ecu:#{ecu.round(2)}")
+  end
+  if enable_info["cpu"]
+    @metrics.add("#{name}.#{region}", "ec2.cpu.sum", cpu.round(0))
+    @logger.info("[#{name}][#{region}] cpu:#{cpu.round(0)}")
+  end
+  if enable_info["mem"]
+    @metrics.add("#{name}.#{region}", "ec2.mem.sum", mem.round(2))
+    @logger.info("[#{name}][#{region}] mem:#{mem.round(2)}")
+  end
 
   if enable_info["ebs"]
+
     # Get informations about volumes attached on instances
     count_volumes = {}
     aws_util.get_all_attached_volumes_by_ids(ebs_list).volumes.each do |v|
@@ -76,6 +92,7 @@ def process_aws_account(name, access_key, secret_key, region, enable_info)
 
     count_volumes.each do |k,v|
       @logger.info("[#{name}][#{region}] ebs:#{k}=#{v}")
+      @metrics.add("#{name}.#{region}", "ebs.#{k}.sum", v)
     end
 
   end
@@ -83,12 +100,18 @@ def process_aws_account(name, access_key, secret_key, region, enable_info)
 end
 
 init_logger
-conf = read_config
+@logger.info("Initialize aws-instances-count.rb...")
+@conf = read_config
+@metrics = Metrics.new @conf, @logger
 
-conf["aws_accounts"].each do |c|
+@conf["aws_accounts"].each do |c|
   c["regions"].each do |r|
     @logger.info("Process account #{c["name"]} to region #{r}...")
     process_aws_account(c["name"], c["access_key"], c["secret_key"],
                         r, c["enable_info"])
   end
 end
+
+@metrics.send
+
+@logger.info("Ended process.")

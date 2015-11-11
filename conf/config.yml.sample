@@ -11,3 +11,9 @@ aws_accounts:
       mem: yes
       cpu: yes
       cost: yes
+
+metrics:
+  librato:
+    email: user@librato
+    token: librato_token
+    all_metric_prefix: aws.resource

@@ -3,7 +3,7 @@ require 'json'
 class Instances
 
   def initialize()
-    file = File.read("data/instances.json")
+    file = File.read(File.expand_path("../data/instances.json", __FILE__))
     @data_hash = JSON.parse(file)
     @cache = {}
   end
