@@ -37,6 +37,7 @@ Collection of Ruby script to send count and usage of aws resources of multiple a
 
   ```bash
   docker run -v $PWD:/opt/aws-resources-metrics/ --rm aws-resources-metrics ./aws-instances-count.rb
+  ```
 
 ### Recommended EC2 Permissions
 
