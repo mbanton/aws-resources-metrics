@@ -1,0 +1,29 @@
+GEM
+  specs:
+    aggregate (0.2.2)
+    aws-sdk (2.1.16)
+      aws-sdk-resources (= 2.1.16)
+    aws-sdk-core (2.1.16)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.1.16)
+      aws-sdk-core (= 2.1.16)
+    faraday (0.9.1)
+      multipart-post (>= 1.2, < 3)
+    jmespath (1.0.2)
+      multi_json (~> 1.0)
+    librato-metrics (1.5.1)
+      aggregate (~> 0.2.2)
+      faraday (~> 0.7)
+      multi_json
+    multi_json (1.11.2)
+    multipart-post (2.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  aws-sdk (~> 2)
+  librato-metrics
+
+BUNDLED WITH
+   1.10.6
