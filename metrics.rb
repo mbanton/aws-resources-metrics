@@ -8,12 +8,13 @@ class Metrics
     Librato::Metrics.authenticate conf["metrics"]["librato"]["email"],
                                   conf["metrics"]["librato"]["token"]
     @prefix = conf["metrics"]["librato"]["all_metric_prefix"]
+    @measure_time = Time.now
     @queue = Librato::Metrics::Queue.new
   end
 
   def add(source, metric, value)
     metric_name = "#{@prefix}.#{metric}"
-    @queue.add metric_name => {:type => :gauge, :value => value, :source => source}
+    @queue.add metric_name => {:measure_time => @measure_time, :type => :gauge, :value => value, :source => source}
   end
 
   def send()
