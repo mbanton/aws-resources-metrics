@@ -68,3 +68,4 @@ Collection of Ruby script to send count and usage of aws resources of multiple a
 ### TODO
 
 * Save the data in CSV besides sending metrics
+* Write some tests
