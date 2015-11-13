@@ -62,24 +62,24 @@ def process_aws_account(name, access_key, secret_key, region, enable_info)
     @metrics.add("#{name}.#{region}", "ec2.#{k}.count", v)
   end
 
-  if enable_info["cost"]
+  if enable_info["cost"] and cost > 0.0
     @metrics.add("#{name}.#{region}", "ec2.cost.sum", cost.round(2))
     @logger.info("[#{name}][#{region}] cost:#{cost.round(2)}")
   end
-  if enable_info["ecu"]
+  if enable_info["ecu"] and ecu > 0.0
     @metrics.add("#{name}.#{region}", "ec2.ecu.sum", ecu.round(2))
     @logger.info("[#{name}][#{region}] ecu:#{ecu.round(2)}")
   end
-  if enable_info["cpu"]
+  if enable_info["cpu"] and cpu > 0.0
     @metrics.add("#{name}.#{region}", "ec2.cpu.sum", cpu.round(0))
     @logger.info("[#{name}][#{region}] cpu:#{cpu.round(0)}")
   end
-  if enable_info["mem"]
+  if enable_info["mem"] and mem > 0.0
     @metrics.add("#{name}.#{region}", "ec2.mem.sum", mem.round(2))
     @logger.info("[#{name}][#{region}] mem:#{mem.round(2)}")
   end
 
-  if enable_info["ebs"]
+  if enable_info["ebs"] and ebs_list.size > 0
 
     # Get informations about volumes attached on instances
     count_volumes = {}
