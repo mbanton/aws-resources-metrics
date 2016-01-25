@@ -40,13 +40,18 @@ def process_aws_account(name, access_key, secret_key, region, enable_info)
   aws_util.get_all_running_instances().reservations.each do |r|
     r.instances.each do |i|
 
-      # Counters
       count_classes[i.instance_type] += 1 if count_classes[i.instance_type]
       count_classes[i.instance_type] = 1 unless count_classes[i.instance_type]
-      cost += instances.get_cost(i.instance_type, region)
-      ecu += instances.get_ecu(i.instance_type)
-      cpu += instances.get_cpu(i.instance_type)
-      mem += instances.get_mem(i.instance_type)
+
+      # Counters
+      begin
+        cost += instances.get_cost(i.instance_type, region)
+        ecu += instances.get_ecu(i.instance_type)
+        cpu += instances.get_cpu(i.instance_type)
+        mem += instances.get_mem(i.instance_type)
+      rescue Exception => e
+        @logger.error("UncaughtException in counters: #{e.message}")
+      end
 
       # For all EBS volumes, append the vol-id in list
       i.block_device_mappings.each do |v|
